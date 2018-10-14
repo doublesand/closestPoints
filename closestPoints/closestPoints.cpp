@@ -47,7 +47,7 @@ class Points {
 public:
 	Points(int n0) {
 		n = n0;
-		closest_distance = n * n;	  //n*n 相当于无穷值 
+		closest_distance = n;	  //n 相当于无穷值 
 		closest_distance1 = closest_distance;
 		points = new Point[n];
 		x = new Point[n];
@@ -55,7 +55,7 @@ public:
 	}
 
 	void init() {  //初始化点集
-		srand((unsigned)time(NULL));  //时间种子
+		srand((unsigned)time(0));  //时间种子
 		for (int i = 0; i < n; i++) {
 			points[i].x = rand() % n + rand() / double(RAND_MAX);
 			points[i].y = rand() % n + rand() / double(RAND_MAX);
@@ -74,7 +74,7 @@ public:
 	double find_closest_distance(int low, int high) {
 		//只有一个元素直接返回无穷大 
 		if (low == high) {
-			return n * n;
+			return n;
 		} 
 		//只有两个元素返回两者之间的距离 
 		if (low + 1 == high) {
@@ -173,14 +173,18 @@ public:
 };
 
 int main() {
-	int n = 1000;
+	int n = 1000000;
 	Points points(n);  //传入的数字是规模 
 	points.init();
 	points.sort_x();
-	cout << "分治法最短距离为" << points.find_closest_distance(0,n-1);
-	points.brute_force();
-	int x;
-	cin >> x;
+	clock_t start = clock();
+	double closest_distance = points.find_closest_distance(0, n - 1);
+	cout << "分治法最短距离为" << closest_distance << endl;
+	//points.brute_force();
+	clock_t end = clock();
+	double time = (double)(end - start);
+	cout << "运行时间为：" << time << "ms" << endl;
+	getchar();
 	return 0;
 }
 
@@ -200,4 +204,6 @@ int main() {
    ① 返回条件
    ② 压栈顺序
    特别是压栈顺序的不同，带来的结果全然不同，甚至导致出错，可以参照遍历树。
+9. 结果出现负数, 我考虑了很久，怎么就出现了负数呢，计算机出现负数，当你排除所有可能的时候，只有一个真相
+   那就是溢出。当规模为1000000时，我定义n*n为最大值，自然就溢出了，所以以后最大值就是最大值，别老想其他的。
 */

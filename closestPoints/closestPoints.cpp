@@ -55,7 +55,7 @@ public:
 	}
 
 	void init() {  //初始化点集
-		srand((unsigned)time(0));  //时间种子
+		srand((unsigned)time(NULL));  //时间种子
 		for (int i = 0; i < n; i++) {
 			points[i].x = rand() % n + rand() / double(RAND_MAX);
 			points[i].y = rand() % n + rand() / double(RAND_MAX);
@@ -159,7 +159,7 @@ public:
 		delete x;
 		delete y;
 	}
-	void brute_force() {
+	double brute_force() {
 		for (int i = 0; i < n; i++) {
 			for (int j = i+1; j < n; j++) {
 				if (points[i].distance(points[j]) < closest_distance1)
@@ -168,22 +168,28 @@ public:
 				}
 			}
 		}
-		cout << "暴力法最短距离为：" << closest_distance1 << endl;
+		return closest_distance1;
 	}
 };
 
 int main() {
-	int n = 1000000;
+	int n = 90000;
+	double time = 0;
 	Points points(n);  //传入的数字是规模 
-	points.init();
-	points.sort_x();
-	clock_t start = clock();
-	double closest_distance = points.find_closest_distance(0, n - 1);
-	cout << "分治法最短距离为" << closest_distance << endl;
-	//points.brute_force();
-	clock_t end = clock();
-	double time = (double)(end - start);
-	cout << "运行时间为：" << time << "ms" << endl;
+	cout << "规模为" << n << "次的结果如下" << endl;
+	for (int i = 0; i < 5; i++)
+	{
+		points.init();
+		clock_t start = clock();
+		//points.sort_x();
+		//double closest_distance = points.find_closest_distance(0, n - 1);
+		double closest_distance = points.brute_force();
+		clock_t end = clock();
+		time += (double)(end - start);
+		cout << "第" << i + 1 << "次分治法最短距离为" << closest_distance << "   ";
+		cout << "第"<<i+1<< "次运行时间为：" << (double)(end - start) << "ms" << endl;
+	}
+	cout << "平均时间为：" << time / 5 <<"ms"<< endl;
 	getchar();
 	return 0;
 }
